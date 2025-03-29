@@ -58,7 +58,7 @@ install-deps: update-apt
 	sudo apt install -y --no-install-recommends build-essential libprotobuf-dev libprotobuf-c-dev \
 	protobuf-c-compiler protobuf-compiler python3-protobuf pkg-config uuid-dev libnl-3-dev libseccomp-dev \
 	iproute2 libnftables-dev libcap-dev libnet1-dev libgnutls28-dev asciidoc xmlto linux-libc-dev git tmux \
-	skopeo;
+	skopeo rsync;
 	
 
 $(TMP_DIR)/criu-$(CRIU_VERSION).tar.gz:
