@@ -1,8 +1,86 @@
+CURRENT_DIR = $(shell pwd)
 
-.PHONY:create-socket
+BUNDLE_PATH := $(CURRENT_DIR)/runc
+CHECKPOINT_PATH := $(CURRENT_DIR)/tmp
+
+MAKEFILE_PATH := $(CURRENT_DIR)/$(lastword $(MAKEFILE_LIST))
+
+.PHONY: create-socket
 create-socket:
-    sudo recvtty -m single console.sock
+	@echo "Creating socket..."
+	@if [ -e console.sock ]; then \
+		echo "Socket already exists. Removing..."; \
+		make clean-socket -f $(MAKEFILE_PATH); \
+	fi
+	clear
+	recvtty -m single $(BUNDLE_PATH)/console.sock
 
-.PHONY: run-container
-run-container:
-    sudo sudo runc run --console-socket ./console.sock -b runc -d server
+.PHONY: clean-socket
+clean-socket:
+	@echo "Cleaning up socket..."
+	rm -f $(BUNDLE_PATH)/console.sock
+
+.PHONY: run
+run:
+	@echo "Running server..."
+	runc run --console-socket ./console.sock -b $(BUNDLE_PATH) -d "$$(cat $(BUNDLE_PATH)/.id)"
+
+.PHONY: run-server
+run-server:
+	cp config-server.json $(BUNDLE_PATH)/config.json
+	@echo "server" > $(BUNDLE_PATH)/.id
+	make run -f $(MAKEFILE_PATH)
+
+.PHONY: run-client
+run-client:
+	cp config-client.json $(BUNDLE_PATH)/config.json
+	@echo "server" > $(BUNDLE_PATH)/.id
+	make run -f $(MAKEFILE_PATH)
+
+.PHONY: test
+test:
+	@echo "Running tests..."
+	@echo "$(MAKEFILE_PATH)"
+
+.PHONY: checkpoint
+checkpoint:
+	@echo "Creating checkpoint..."
+	runc checkpoint --image-path $(CHECKPOINT_PATH)/checkpoint/ \
+		--work-path $(CHECKPOINT_PATH)/criu/ \
+		--tcp-established \
+		"$$(cat $(BUNDLE_PATH)/.id)"
+
+.PHONY: restore
+restore:
+	@echo "Restoring container..."
+	runc restore --image-path $(CHECKPOINT_PATH)/checkpoint/ \
+		--work-path $(CHECKPOINT_PATH)/criu/ \
+		--tcp-established \
+		-b $(BUNDLE_PATH) \
+		--console-socket ./console.sock \
+		-d "$$(cat $(BUNDLE_PATH)/.id)"
+
+.PHONY: kill
+kill:
+	@echo "Killing container..."
+	runc kill "$$(cat $(BUNDLE_PATH)/.id)" 9 &> /dev/null
+
+.PHONY: delete
+delete: kill
+	@echo "Deleting container..."
+	runc delete "$$(cat $(BUNDLE_PATH)/.id)"
+
+.PHONY: create-tmpfs
+create-tmpfs:
+	mkdir -p $(CHECKPOINT_PATH)
+	sudo mount -t tmpfs none $(CHECKPOINT_PATH)
+
+.PHONY: clean
+clean:
+	@echo "Cleaning up..."
+	rm -rf $(BUNDLE_PATH)/config.json
+	rm -rf $(BUNDLE_PATH)/.id
+	umount $(CHECKPOINT_PATH)
+	rm -rf $(CHECKPOINT_PATH)
+	rm -rf $(BUNDLE_PATH)/console.sock
+	@echo "Cleanup complete."

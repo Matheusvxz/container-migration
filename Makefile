@@ -13,6 +13,8 @@ NETNS_SHA256= 8a3a48183ed5182a0619b18f05ef42ba5c4c3e3e499a2e2cb33787bd7fbdaa5c
 UMOCI_VERSION = 0.4.7
 UMOCI_SHA256= 6abecdbe7ac96a8e48fdb73fb53f08d21d4dc5e040f7590d2ca5547b7f2b2e85
 
+CRIT_VERSION = 7.2.0
+
 .PHONY: default
 default:
 	make install-deps
@@ -45,6 +47,12 @@ default:
 		make install-umoci; \
 	else \
 		echo "umoci is already installed. Skipping installation."; \
+	fi
+	@if ! command -v crit >/dev/null 2>&1; then \
+		echo "crit is not installed. Installing crit..."; \
+		make install-crit; \
+	else \
+		echo "crit is already installed. Skipping installation."; \
 	fi
 
 .PHONY: update-apt
@@ -122,6 +130,7 @@ install-runc:
 	@echo "Installing runC..."
 	sudo mkdir -p $(GOPATH)/src/github.com/opencontainers/runc
 	sudo chmod 777 $(GOPATH)/src/github.com/opencontainers/runc
+	git config --global --add safe.directory $(GOPATH)/src/github.com/opencontainers/runc
 	git clone --depth 1 --branch v$(RUNC_VERSION) https://github.com/opencontainers/runc.git $(GOPATH)/src/github.com/opencontainers/runc
 	cd $(GOPATH)/src/github.com/opencontainers/runc && make && make test-binaries && sudo make install
 	sudo cp $(GOPATH)/src/github.com/opencontainers/runc/tests/cmd/_bin/recvtty /usr/local/bin/recvtty
@@ -144,3 +153,15 @@ install-umoci:
 		&& echo "$(UMOCI_SHA256)  /usr/local/bin/umoci" | sha256sum -c - \
 		&& sudo chmod a+x "/usr/local/bin/umoci"
 	echo "umoci installation complete."
+
+# crit install
+.PHONY: install-crit
+install-crit:
+	@echo "Installing crit..."
+	sudo mkdir -p $(GOPATH)/src/github.com/checkpoint-restore/go-criu
+	sudo chmod 777 $(GOPATH)/src/github.com/checkpoint-restore/go-criu
+	git config --global --add safe.directory $(GOPATH)/src/github.com/checkpoint-restore/go-criu
+	git clone --depth 1 --branch v$(CRIT_VERSION) https://github.com/checkpoint-restore/go-criu.git $(GOPATH)/src/github.com/checkpoint-restore/go-criu
+	cd $(GOPATH)/src/github.com/checkpoint-restore/go-criu && make build
+	sudo cp $(GOPATH)/src/github.com/checkpoint-restore/go-criu/crit/bin/crit /usr/local/bin/crit
+	sudo chmod 755 /usr/local/bin/crit

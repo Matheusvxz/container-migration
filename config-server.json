@@ -188,9 +188,9 @@
     "hooks": {
 		"prestart": [
 			{
-				"path": "/usr/bin/netns",
+				"path": "/usr/local/bin/netns",
 				"args": [
-					"/usr/bin/netns",
+					"/usr/local/bin/netns",
 					"--static-ip",
 					"172.19.0.2"
 				]

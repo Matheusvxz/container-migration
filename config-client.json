@@ -10,7 +10,7 @@
 			"./main",
 			"client",
 			"3000",
-			"{{.ServerIP}}"
+			"{{ServerIP}}"
 		],
 		"env": [
 			"PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin",
@@ -189,9 +189,9 @@
     "hooks": {
 		"prestart": [
 			{
-				"path": "/usr/bin/netns",
+				"path": "/usr/local/bin/netns",
 				"args": [
-					"/usr/bin/netns",
+					"/usr/local/bin/netns",
 					"--static-ip",
 					"172.19.0.2"
 				]

@@ -11,7 +11,7 @@ ABS_OUTPUT_FOLDER = $(shell realpath $(CURRENT_DIR)/$(OUTPUT_FOLDER))
 # mkdir -p $(TEMP_DIR)
 
 .PHONY: all
-all: $(ABS_OUTPUT_FOLDER)/config-server.json
+all: $(ABS_OUTPUT_FOLDER)/rootfs/app/main
 	
 $(TEMP_DIR)/index.json:
 	skopeo copy docker://docker.io/$(DOCKER_IMAGE) oci:$(TEMP_DIR):$(TAG)
@@ -28,12 +28,6 @@ $(ABS_OUTPUT_FOLDER)/rootfs/app/main: $(CURRENT_DIR)/../app/main $(ABS_OUTPUT_FO
 	mkdir -p $(ABS_OUTPUT_FOLDER)/rootfs/app
 	cp $(CURRENT_DIR)/../app/main $(ABS_OUTPUT_FOLDER)/rootfs/app/main
 	chmod +x $(ABS_OUTPUT_FOLDER)/rootfs/app/main
-
-$(ABS_OUTPUT_FOLDER)/config-client.json: $(ABS_OUTPUT_FOLDER)/rootfs/app/main
-	cp $(CURRENT_DIR)/../config-client.json $(ABS_OUTPUT_FOLDER)/config-client.json
-
-$(ABS_OUTPUT_FOLDER)/config-server.json: $(ABS_OUTPUT_FOLDER)/config-client.json
-	cp $(CURRENT_DIR)/../config-server.json $(ABS_OUTPUT_FOLDER)/config-server.json
 
 .PHONY: clean-runc
 clean-runc:
