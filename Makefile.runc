@@ -1,0 +1,8 @@
+
+.PHONY:create-socket
+create-socket:
+    sudo recvtty -m single console.sock
+
+.PHONY: run-container
+run-container:
+    sudo sudo runc run --console-socket ./console.sock -b runc -d server

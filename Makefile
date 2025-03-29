@@ -5,7 +5,7 @@ GO_VERSION = 1.23.7
 GO_TARBALL = go$(GO_VERSION).linux-amd64.tar.gz
 GO_INSTALL_DIR = /usr/local
 
-RUNC_VERSION = 1.2.6
+RUNC_VERSION = 1.3.0-rc.1
 
 NETNS_VERSION = 0.5.3
 NETNS_SHA256= 8a3a48183ed5182a0619b18f05ef42ba5c4c3e3e499a2e2cb33787bd7fbdaa5c
@@ -14,7 +14,7 @@ UMOCI_VERSION = 0.4.7
 UMOCI_SHA256= 6abecdbe7ac96a8e48fdb73fb53f08d21d4dc5e040f7590d2ca5547b7f2b2e85
 
 .PHONY: default
-default: 
+default:
 	make install-deps
 	@if ! command -v sudo criu >/dev/null 2>&1; then \
 		echo "CRIU is not installed. Installing CRIU..."; \
@@ -123,7 +123,9 @@ install-runc:
 	sudo mkdir -p $(GOPATH)/src/github.com/opencontainers/runc
 	sudo chmod 777 $(GOPATH)/src/github.com/opencontainers/runc
 	git clone --depth 1 --branch v$(RUNC_VERSION) https://github.com/opencontainers/runc.git $(GOPATH)/src/github.com/opencontainers/runc
-	cd $(GOPATH)/src/github.com/opencontainers/runc && make && sudo make install
+	cd $(GOPATH)/src/github.com/opencontainers/runc && make && make test-binaries && sudo make install
+	sudo cp $(GOPATH)/src/github.com/opencontainers/runc/tests/cmd/_bin/recvtty /usr/local/bin/recvtty
+	sudo chmod 755 /usr/local/bin/recvtty
 
 # netns installation
 .PHONY: install-netns
