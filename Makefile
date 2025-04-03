@@ -18,37 +18,37 @@ CRIT_VERSION = 7.2.0
 .PHONY: default
 default:
 	make install-deps
-	if [ -f /usr/local/sbin/criu ]; then \
+	@if [ -f /usr/local/sbin/criu ]; then \
 		echo "CRIU is already installed. Skipping installation."; \
 	else \
 		echo "CRIU is not installed. Installing CRIU..."; \
 		make install-criu; \
 	fi
-	if [ -f /usr/local/go/bin/go ]; then \
+	@if [ -f /usr/local/go/bin/go ]; then \
 		echo "Go is already installed. Skipping installation."; \
 	else \
 		echo "Go is not installed. Installing Go..."; \
 		make install-go; \
 	fi
-	if [ -f /usr/local/sbin/runc ]; then \
+	@if [ -f /usr/local/sbin/runc ]; then \
 		echo "runC is already installed. Skipping installation."; \
 	else \
 		echo "runC is not installed. Installing runC..."; \
 		make install-runc; \
 	fi
-	if [ -f /usr/local/bin/netns ]; then \
+	@if [ -f /usr/local/bin/netns ]; then \
 		echo "netns is already installed. Skipping installation."; \
 	else \
 		echo "netns is not installed. Installing netns..."; \
 		make install-netns; \
 	fi
-	if [ -f /usr/local/bin/umoci ]; then \
+	@if [ -f /usr/local/bin/umoci ]; then \
 		echo "umoci is already installed. Skipping installation."; \
 	else \
 		echo "umoci is not installed. Installing umoci..."; \
 		make install-umoci; \
 	fi
-	if [ -f /usr/local/bin/crit ]; then \
+	@if [ -f /usr/local/bin/crit ]; then \
 		echo "crit is already installed. Skipping installation."; \
 	else \
 		echo "crit is not installed. Installing crit..."; \
