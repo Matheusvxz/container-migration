@@ -87,7 +87,6 @@ $(TMP_DIR)/criu-$(CRIU_VERSION)/criu: $(TMP_DIR)/criu-$(CRIU_VERSION)/Makefile
 
 .PHONY: install-criu
 install-criu: $(TMP_DIR)/criu-$(CRIU_VERSION)/criu
-	make build-criu; 
 	echo "Installing CRIU...";
 	cd $(TMP_DIR)/criu-$(CRIU_VERSION) && sudo make install;
 	echo "CRIU installation complete.";
