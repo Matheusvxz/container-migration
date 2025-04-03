@@ -25,61 +25,61 @@ Follow these steps to prepare the environment:
    cd container-migration
    ```
 
-1. **Install Make**
+2. **Install Make**
    ```bash
    sudo apt install -y make
    ```
 
-2. **Install Dependencies**
+3. **Install Dependencies**
    Run the provided script to install all necessary dependencies, including `runc` and `CRIU`, this can take several minutes:
    ```bash
    make
    ```
 
-3. **Verify Installation**
+4. **Verify Installation**
    After running the script, verify that `runc` and `CRIU` are installed correctly:
    ```bash
    sudo runc --version
    sudo criu --version
    ```
-4. **Prepare conteiner root filesystem**
+5. **Prepare conteiner root filesystem**
    Using Skopeo to download the busybox image and umoci to unpack, build a demo app for client and server:
    ```bash
    cd container/
    make
    ```
 
-5. **Create Unix Domain Socket**
+6. **Create Unix Domain Socket**
     Create a unix domain socket to receive all the sdtout of the container
     ```bash
    make create-socket -f Makefile.runc
    ```
 
-6. **Start container**
+7. **Start container**
    Open a new terminal and start the server container running:
    ```bash
    sudo make run-server -f Makefile.runc
    ```
 
-7. **Connect to the server**
+8. **Connect to the server**
    Start the server container demo running:
    ```bash
    ./app/main client 3000 $(cat runc/.ip)
    ```
 
-8. **Create a tmpfs folder**
+9. **Create a tmpfs folder**
     Create a tmpfs folder to store the checkpoint dump:
     ```bash
     make create-tmpfs -f Makefile.runc
    ```
 
-9. **Create a checkpoint**
+10. **Create a checkpoint**
     Create the checkpoint dump of the server container:
     ```bash
     sudo make checkpoint -f Makefile.runc
    ```
 
-10. **Create a new socket**
+11. **Create a new socket**
     Create the checkpoint dump of the server container:
     ```bash
     make create-socket -f Makefile.runc
