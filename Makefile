@@ -18,42 +18,41 @@ CRIT_VERSION = 7.2.0
 .PHONY: default
 default:
 	make install-deps
-	make install-criu;
-#	@if ! command -v sudo criu >/dev/null 2>&1; then \
-#		echo "CRIU is not installed. Installing CRIU..."; \
-#		make install-criu; \
-#	else \
-#		echo "CRIU is already installed. Skipping installation."; \
-#	fi
-	@if ! command -v go >/dev/null 2>&1; then \
+	if [ -f /usr/local/sbin/criu ]; then \
+		echo "CRIU is already installed. Skipping installation."; \
+	else \
+		echo "CRIU is not installed. Installing CRIU..."; \
+		make install-criu; \
+	fi
+	if [ -f /usr/local/go/bin/go ]; then \
+		echo "Go is already installed. Skipping installation."; \
+	else \
 		echo "Go is not installed. Installing Go..."; \
 		make install-go; \
-	else \
-		echo "Go is already installed. Skipping installation."; \
 	fi
-	@if ! command -v sudo runc >/dev/null 2>&1; then \
+	if [ -f /usr/local/sbin/runc ]; then \
+		echo "runC is already installed. Skipping installation."; \
+	else \
 		echo "runC is not installed. Installing runC..."; \
 		make install-runc; \
-	else \
-		echo "runC is already installed. Skipping installation."; \
 	fi
-	@if ! command -v netns >/dev/null 2>&1; then \
+	if [ -f /usr/local/bin/netns ]; then \
+		echo "netns is already installed. Skipping installation."; \
+	else \
 		echo "netns is not installed. Installing netns..."; \
 		make install-netns; \
-	else \
-		echo "netns is already installed. Skipping installation."; \
 	fi
-	@if ! command -v umoci >/dev/null 2>&1; then \
+	if [ -f /usr/local/bin/umoci ]; then \
+		echo "umoci is already installed. Skipping installation."; \
+	else \
 		echo "umoci is not installed. Installing umoci..."; \
 		make install-umoci; \
-	else \
-		echo "umoci is already installed. Skipping installation."; \
 	fi
-	@if ! command -v crit >/dev/null 2>&1; then \
+	if [ -f /usr/local/bin/crit ]; then \
+		echo "crit is already installed. Skipping installation."; \
+	else \
 		echo "crit is not installed. Installing crit..."; \
 		make install-crit; \
-	else \
-		echo "crit is already installed. Skipping installation."; \
 	fi
 
 .PHONY: update-apt

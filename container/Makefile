@@ -1,14 +1,11 @@
-
 DOCKER_IMAGE = busybox:1.37-glibc
 OUTPUT_FOLDER = ../runc
 TAG = test
-
 
 CURRENT_DIR = $(shell pwd)
 TEMP_DIR = "/tmp/skopeo"
 ABS_OUTPUT_FOLDER = $(shell realpath $(CURRENT_DIR)/$(OUTPUT_FOLDER))
 
-# mkdir -p $(TEMP_DIR)
 
 .PHONY: all
 all: $(ABS_OUTPUT_FOLDER)/rootfs/app/main

@@ -39,8 +39,8 @@ Follow these steps to prepare the environment:
 3. **Verify Installation**
    After running the script, verify that `runc` and `CRIU` are installed correctly:
    ```bash
-   runc --version
-   criu --version
+   sudo runc --version
+   sudo criu --version
    ```
 4. **Prepare conteiner root filesystem**
    Using Skopeo to download the busybox image and umoci to unpack, build a demo app for client and server:
@@ -58,7 +58,7 @@ Follow these steps to prepare the environment:
 6. **Start container**
    Open a new terminal and start the server container running:
    ```bash
-   make run-server -f Makefile.runc
+   sudo make run-server -f Makefile.runc
    ```
 
 7. **Connect to the server**
@@ -76,7 +76,7 @@ Follow these steps to prepare the environment:
 9. **Create a checkpoint**
     Create the checkpoint dump of the server container:
     ```bash
-    make checkpoint -f Makefile.runc
+    sudo make checkpoint -f Makefile.runc
    ```
 
 10. **Create a new socket**
@@ -84,10 +84,11 @@ Follow these steps to prepare the environment:
     ```bash
     make create-socket -f Makefile.runc
    ```
+
 11. **Restore the container**
     Restore the container with the dump images:
     ```bash
-    make restore -f Makefile.runc
+    sudo make restore -f Makefile.runc
    ```
 
 12. **Validate restauration**
