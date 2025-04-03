@@ -108,7 +108,6 @@ setup-go-env:
 		echo "export PATH=$(GO_INSTALL_DIR)/go/bin:$$PATH" >> ~/.profile; \
 		echo "export GOPATH=$(GO_INSTALL_DIR)/go/bin" >> ~/.profile; \
 		echo "Go environment variables added to ~/.profile"; \
-		source ~/.profile; \
 	else \
 		echo "Go is already in the PATH."; \
 	fi
