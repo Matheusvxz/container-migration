@@ -18,12 +18,13 @@ CRIT_VERSION = 7.2.0
 .PHONY: default
 default:
 	make install-deps
-	@if ! command -v sudo criu >/dev/null 2>&1; then \
-		echo "CRIU is not installed. Installing CRIU..."; \
-		make install-criu; \
-	else \
-		echo "CRIU is already installed. Skipping installation."; \
-	fi
+	make install-criu;
+#	@if ! command -v sudo criu >/dev/null 2>&1; then \
+#		echo "CRIU is not installed. Installing CRIU..."; \
+#		make install-criu; \
+#	else \
+#		echo "CRIU is already installed. Skipping installation."; \
+#	fi
 	@if ! command -v go >/dev/null 2>&1; then \
 		echo "Go is not installed. Installing Go..."; \
 		make install-go; \
@@ -76,8 +77,7 @@ $(TMP_DIR)/criu-$(CRIU_VERSION).tar.gz:
 $(TMP_DIR)/criu-$(CRIU_VERSION)/Makefile: $(TMP_DIR)/criu-$(CRIU_VERSION).tar.gz
 	tar -xzf $(TMP_DIR)/criu-$(CRIU_VERSION).tar.gz -C $(TMP_DIR)
 
-.PHONY: build-criu
-build-criu: $(TMP_DIR)/criu-$(CRIU_VERSION)/Makefile
+$(TMP_DIR)/criu-$(CRIU_VERSION)/criu: $(TMP_DIR)/criu-$(CRIU_VERSION)/Makefile
 	@if ! command -v criu >/dev/null 2>&1; then \
 		cd $(TMP_DIR)/criu-$(CRIU_VERSION)/; \
 		make; \
@@ -89,8 +89,7 @@ build-criu: $(TMP_DIR)/criu-$(CRIU_VERSION)/Makefile
 install-criu: $(TMP_DIR)/criu-$(CRIU_VERSION)/criu
 	make build-criu; 
 	echo "Installing CRIU...";
-	cd $(TMP_DIR)/criu-$(CRIU_VERSION);
-	sudo make install;
+	cd $(TMP_DIR)/criu-$(CRIU_VERSION) && sudo make install;
 	echo "CRIU installation complete.";
 	make clean;
 
