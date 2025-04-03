@@ -193,7 +193,7 @@
 				"args": [
 					"/usr/local/bin/netns",
 					"--static-ip",
-					"172.19.0.2"
+					"172.19.0.3"
 				]
 			}
 		]

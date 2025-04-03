@@ -37,11 +37,6 @@ run-client:
 	@echo "server" > $(BUNDLE_PATH)/.id
 	make run -f $(MAKEFILE_PATH)
 
-.PHONY: test
-test:
-	@echo "Running tests..."
-	@echo "$(MAKEFILE_PATH)"
-
 .PHONY: checkpoint
 checkpoint:
 	@echo "Creating checkpoint..."
