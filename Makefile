@@ -15,8 +15,6 @@ UMOCI_SHA256= 6abecdbe7ac96a8e48fdb73fb53f08d21d4dc5e040f7590d2ca5547b7f2b2e85
 
 CRIT_VERSION = 7.2.0
 
-PATH = $(PATH)
-
 .PHONY: default
 default:
 	make install-deps
