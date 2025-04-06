@@ -1,7 +1,7 @@
 CRIU_VERSION = 4.1
 TMP_DIR = /tmp/criu
 
-GO_VERSION = 1.23.7
+GO_VERSION = 1.24.2
 GO_TARBALL = go$(GO_VERSION).linux-amd64.tar.gz
 GO_INSTALL_DIR = /usr/local
 
