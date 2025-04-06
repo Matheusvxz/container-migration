@@ -47,6 +47,7 @@ Follow these steps to prepare the environment:
    ```bash
    cd container/
    make
+   cd ..
    ```
 
 1. **Create Unix Domain Socket**

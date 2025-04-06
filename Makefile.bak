@@ -15,9 +15,6 @@ UMOCI_SHA256= 6abecdbe7ac96a8e48fdb73fb53f08d21d4dc5e040f7590d2ca5547b7f2b2e85
 
 CRIT_VERSION = 7.2.0
 
-$(eval export PATH=$(GO_INSTALL_DIR)/go/bin:$(PATH))
-$(eval export GOPATH=$(GO_INSTALL_DIR)/go/bin)
-
 .PHONY: default
 default:
 	make install-deps
@@ -104,9 +101,19 @@ clean:
 .PHONY: setup-go-env
 setup-go-env:
 	@echo "Setting up Go environment variables..."
-	echo 'export PATH=$(GO_INSTALL_DIR)/go/bin:$$PATH' >> ~/.profile; \
-	echo 'export GOPATH=$(GO_INSTALL_DIR)/go/bin' >> ~/.profile; \
-	echo "Go environment variables added to ~/.profile";
+	@if ! echo $$PATH | grep -q "$(GO_INSTALL_DIR)/go/bin"; then \
+		echo "export PATH=$(GO_INSTALL_DIR)/go/bin:$$PATH" >> ~/.profile; \
+		echo "export GOPATH=$(GO_INSTALL_DIR)/go/bin" >> ~/.profile; \
+		$(eval source ~/.profile) \
+		echo "Go environment variables added to ~/.profile"; \
+	else \
+		echo "Go is already in the PATH."; \
+	fi
+
+.PHONY: test
+test:
+	make setup-go-env
+	go --help
 
 .PHONY: install-go
 install-go:
