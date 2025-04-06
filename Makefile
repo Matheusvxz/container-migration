@@ -104,7 +104,7 @@ setup-go-env:
 	@if ! echo $$PATH | grep -q "$(GO_INSTALL_DIR)/go/bin"; then \
 		echo "export PATH=$(GO_INSTALL_DIR)/go/bin:$$PATH" >> ~/.profile; \
 		echo "export GOPATH=$(GO_INSTALL_DIR)/go/bin" >> ~/.profile; \
-		export PATH=$(GO_INSTALL_DIR)/go/bin:$(PATH); \
+		export PATH=$(GO_INSTALL_DIR)/go/bin:$$PATH; \
 		export GOPATH=$(GO_INSTALL_DIR)/go/bin; \
 		echo "Go environment variables added to ~/.profile"; \
 	else \
