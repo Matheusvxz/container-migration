@@ -2,6 +2,8 @@
 
 This repository is designed to set up an environment for running containers using `runc` and performing checkpoint/restore operations with `CRIU`. It serves as a foundation for experiments involving container migration.
 
+This repository is a complement to the article "Migração de Contêineres Utilizando runC e CRIU em Ambiente de Nuvem" submitted to ERAD-SP 2025.
+
 ## Objectives
 
 The primary goals of this repository are:
@@ -42,58 +44,128 @@ Follow these steps to prepare the environment:
    sudo runc --version
    sudo criu --version
    ```
-1. **Prepare conteiner root filesystem**
-   Using Skopeo to download the busybox image and umoci to unpack, build a demo app for client and server:
+1. **Prepare images**
+   Create the container filesystem for each application
    ```bash
-   cd container/
-   make
-   cd ..
+   cd app-client && make
+   cd app-server && make
+   cd redis && make
    ```
 
-1. **Create Unix Domain Socket**
-    Create a unix domain socket to receive all the sdtout of the container
-    ```bash
-   make create-socket -f Makefile.runc
-   ```
-
-1. **Start container**
-   Open a new terminal and start the server container running:
+1. **Server Application**
+   Starting server application
    ```bash
-   sudo make run-server -f Makefile.runc
+      cd app-server
    ```
 
-1. **Connect to the server**
-   Start the server container demo running:
+   1. **Create Unix Domain Socket**
+      Create a new terminal and run the command to create a unix domain socket to receive all the sdtout of the container:
+      ```bash
+      make create-socket
+      ```
+   1. **Create a temporary filesystem**
+      Create a tmpfs folder to improve read and write operations:
+      ```bash
+      make create-tmpfs
+      ```
+   1. **Start the container**
+      Open a new terminal and start the server container running:
+      ```bash
+      sudo make run
+      ```
+
+1. **Client Application**
+   Starting client application
    ```bash
-   ./app/main client 3000 $(cat runc/.ip)
+      cd app-client
    ```
 
-1. **Create a tmpfs folder**
-    Create a tmpfs folder to store the checkpoint dump:
-    ```bash
-    make create-tmpfs -f Makefile.runc
-   ```
+   1. **Create Unix Domain Socket**
+      Create a new terminal and run the command to create a unix domain socket to receive all the sdtout of the container:
+      ```bash
+      make create-socket
+      ```
+   1. **Create a temporary filesystem**
+      Create a tmpfs folder to improve read and write operations:
+      ```bash
+      make create-tmpfs
+      ```
+   1. **Start the container**
+       Open a new terminal and start the client container running:
+       ```bash
+         sudo make run
+      ```
 
 1. **Create a checkpoint**
     Create the checkpoint dump of the server container:
     ```bash
-    sudo make checkpoint -f Makefile.runc
+    cd app-server
+    sudo make checkpoint
    ```
 
 1. **Create a new socket**
-    Create the checkpoint dump of the server container:
+    Close the older server socket and create a new one:
     ```bash
-    make create-socket -f Makefile.runc
+    make create-socket
    ```
 
 1. **Restore the container**
     Restore the container with the dump images:
     ```bash
-    sudo make restore -f Makefile.runc
+    sudo make restore
    ```
 
 1. **Validate restauration**
     Check the terminal running the client app to verify if the counter and messages continue from where they were frozen
+
+1. **Redis Application**
+   Running experiments with Redis
+   ```bash
+      cd redis
+   ```
+
+   1. **Create Unix Domain Socket**
+      Create a new terminal and run the command to create a unix domain socket to receive all the sdtout of the container:
+      ```bash
+      make create-socket
+      ```
+   1. **Create a temporary filesystem**
+      Create a tmpfs folder to improve read and write operations:
+      ```bash
+      make create-tmpfs
+      ```
+   1. **Start the container**
+       Open a new terminal and start the client container running:
+       ```bash
+         sudo make run
+      ```
+
+   1. **Load Data into Redis**
+      Use the provided script to write data into the Redis container:
+      ```bash
+      ./load_data.sh
+      ```
+
+   1. **Create a Checkpoint**
+      Create the checkpoint dump of the Redis container:
+      ```bash
+      sudo make checkpoint
+      ```
+      
+   1. **Create a new socket**
+      Close the older server socket and create a new one:
+      ```bash
+      make create-socket
+      ```
+
+   1. **Restore the Container**
+      Restore the Redis container with the dump images:
+      ```bash
+      sudo make restore
+      ```
+
+   1. **Validate Restoration**
+      Verify that the data persists in Redis after restoration by connecting to the Redis container and checking the data.
 
 ## Notes
 

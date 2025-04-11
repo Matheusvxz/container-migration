@@ -10,7 +10,7 @@
 			"./main",
 			"client",
 			"3000",
-			"{{ServerIP}}"
+			"172.19.0.2"
 		],
 		"env": [
 			"PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin",
