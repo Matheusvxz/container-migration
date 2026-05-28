@@ -1,0 +1,29 @@
+{
+  "name": "gcp-image-manager-cli",
+  "version": "1.0.0",
+  "description": "A beautiful interactive CLI to list and delete custom GCP compute images",
+  "type": "module",
+  "main": "src/cli.ts",
+  "scripts": {
+    "start": "tsx src/cli.ts"
+  },
+  "keywords": [
+    "gcp",
+    "gcloud",
+    "cli",
+    "packer",
+    "images"
+  ],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "@clack/prompts": "^0.7.0",
+    "commander": "^12.1.0",
+    "picocolors": "^1.1.0"
+  },
+  "devDependencies": {
+    "@types/node": "^20.19.41",
+    "tsx": "^4.7.2",
+    "typescript": "^5.4.5"
+  }
+}

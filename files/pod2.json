@@ -1,0 +1,16 @@
+{
+  "metadata": {
+    "name": "redis-sandbox-v2",
+    "namespace": "default",
+    "uid": "12345678-1234-1234-1234-1234567890ac",
+    "attempt": 1
+  },
+  "log_directory": "/tmp",
+  "linux": {
+    "security_context": {
+      "namespace_options": {
+        "network": 0
+      }
+    }
+  }
+}

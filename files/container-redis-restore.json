@@ -1,0 +1,15 @@
+{
+  "metadata": {
+    "name": "redis"
+  },
+  "image": {
+    "image": "/tmp/redis-checkpoint.tar"
+  },
+  "command": ["redis-server"],
+  "log_path": "redis.log",
+  "linux": {
+    "security_context": {
+      "privileged": false
+    }
+  }
+}
