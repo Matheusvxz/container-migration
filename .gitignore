@@ -45,7 +45,6 @@ override.tf.json
 terraform.rc
 
 
-
 # Logs
 logs
 *.log
