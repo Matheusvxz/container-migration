@@ -31,3 +31,15 @@ output "vm_ssh_commands" {
 #   description = "Cloud Storage bucket for checkpoints"
 #   value       = google_storage_bucket.checkpoint
 # }
+
+output "controller_details" {
+  description = "Detailed information about the controller VM"
+  value = var.delete_virtual_machines || !var.run_virtual_machines ? {} : {
+    for key, vm in google_compute_instance.compute_instances : key => {
+      name         = vm.name
+      external_ip  = vm.network_interface[0].access_config[0].nat_ip
+      internal_ip  = vm.network_interface[0].network_ip
+      ssh_command  = "ssh -i ${replace(var.ssh_public_key_path, ".pub", "")} dev@${vm.network_interface[0].access_config[0].nat_ip}"
+    } if var.virtual_machines[key].is_controller
+  }
+}

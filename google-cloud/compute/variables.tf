@@ -46,6 +46,12 @@ variable "image_project" {
   nullable    = true
 }
 
+variable "controller_image_name" {
+  description = "Nome da imagem customizada do controller gerada pelo Packer"
+  type        = string
+  default     = ""
+}
+
 # # Locals para usar os valores do .env como padrão
 # locals {
 #   project_id       = var.project_id != "" ? var.project_id : data.external.env.result.project_id
@@ -74,6 +80,7 @@ variable "virtual_machines" {
     machine_type  = string
     zone          = string
     subnet_region = string
+    is_controller = optional(bool, false)
   }))
   default = {
     host-1 = {
@@ -81,6 +88,7 @@ variable "virtual_machines" {
       machine_type  = "e2-medium"
       zone          = "us-central1-a"
       subnet_region = "us-central1"
+      is_controller = false
     }
   }
 }

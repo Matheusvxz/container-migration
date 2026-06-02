@@ -17,9 +17,10 @@ source "googlecompute" "debian" {
   network             = var.network
   subnetwork          = var.subnetwork
   use_iap             = true
+  disk_size           = 10
   
   // Usando e2-medium para a build ser mais rápida, já que compilar C (CRIU) exige um pouco de CPU e RAM.
-  machine_type        = "e2-medium" 
+  machine_type        = "e2-small" 
 }
 
 build {

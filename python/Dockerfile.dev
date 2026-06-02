@@ -1,0 +1,31 @@
+FROM python:3.11-slim
+
+# Instala dependências de rede e SSH essenciais
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    openssh-client \
+    iproute2 \
+    procps \
+    && rm -rf /var/lib/apt/lists/*
+
+WORKDIR /app
+
+# Copia metadados do projeto e arquivos gRPC
+COPY pyproject.toml README.md ./
+COPY proto/ ./proto/
+COPY scripts/ ./scripts/
+COPY src/ ./src/
+
+# Instala o pacote em modo editável (-e) para desenvolvimento ativo
+# E garante que as dependências declaradas sejam satisfeitas
+RUN pip install --no-cache-dir --upgrade pip && \
+    pip install --no-cache-dir -e .
+
+# Compila os stubs gRPC na inicialização
+RUN python scripts/compile_proto.py
+
+# Expondo a porta gRPC padrão do Daemon
+EXPOSE 50051
+
+# Comando padrão: executa o daemon
+# (Para validar a CLI, basta executar o container de forma interativa ou com comandos customizados)
+CMD ["migration-daemon", "--port", "50051", "--hosts-file", "/app/hosts.txt"]

@@ -1,0 +1,16 @@
+[Unit]
+Description=Daemon gRPC de Orquestração de Migração de Contêineres
+After=network.target
+
+[Service]
+Type=simple
+User=dev
+WorkingDirectory=/opt/migration-orchestrator
+ExecStart=/opt/migration-orchestrator/.venv/bin/migration-daemon --port 50051 --key-path /opt/migration-orchestrator/key --hosts-file /opt/migration-orchestrator/hosts.txt --user dev
+Restart=always
+RestartSec=5
+StandardOutput=journal
+StandardError=journal
+
+[Install]
+WantedBy=multi-user.target

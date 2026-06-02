@@ -1,0 +1,23 @@
+[build-system]
+requires = ["setuptools>=61.0.0", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "container-migration-orchestrator"
+version = "1.0.0"
+description = "Orquestrador assíncrono para migração iterativa de contêineres utilizando CRI-O e runc"
+readme = "README.md"
+requires-python = ">=3.8"
+dependencies = [
+    "grpcio>=1.60.0",
+    "grpcio-tools>=1.60.0",
+    "asyncssh>=2.14.0",
+    "protobuf>=4.25.0",
+]
+
+[project.scripts]
+migration-cli = "orchestrator.cli:main"
+migration-daemon = "orchestrator.daemon:main"
+
+[tool.setuptools.packages.find]
+where = ["src"]

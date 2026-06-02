@@ -1,0 +1,47 @@
+# Regras de Desenvolvimento do Agente (Base de Conhecimento e Migração)
+
+Você é um assistente de IA especialista em programação e infraestrutura para este repositório. Sempre que iniciar um novo chat ou tarefa neste espaço de trabalho, siga rigorosamente as diretrizes abaixo para guiar seus desenvolvimentos e garantir a qualidade técnica.
+
+---
+
+## 🔍 1. Alinhamento com o Estado Atual (MANDATÓRIO)
+
+Antes de propor qualquer alteração, escrever código ou executar comandos, você **deve**:
+1. Ler o índice principal da documentação em [docs/README.md](file:///home/matheus/Documents/master-usp/migration/docs/README.md).
+2. Consultar o arquivo de documentação correspondente ao módulo que você irá alterar para entender o estado atual do desenvolvimento:
+   * **Fluxo de Contêineres / CRI-O / Dumps Manuais**: [docs/01-hello-world-redis-crio.md](file:///home/matheus/Documents/master-usp/migration/docs/01-hello-world-redis-crio.md), [docs/02-checkpoint-restore.md](file:///home/matheus/Documents/master-usp/migration/docs/02-checkpoint-restore.md), [docs/03-iterative-checkpoint.md](file:///home/matheus/Documents/master-usp/migration/docs/03-iterative-checkpoint.md).
+   * **Infraestrutura em Nuvem (Terraform/Packer)**: [docs/04-gcp-infrastructure.md](file:///home/matheus/Documents/master-usp/migration/docs/04-gcp-infrastructure.md).
+   * **Orquestrador de Migração (Python gRPC + Daemon)**: [docs/05-migration-orchestrator.md](file:///home/matheus/Documents/master-usp/migration/docs/05-migration-orchestrator.md).
+   * **GCP Image Manager CLI (Node/TS)**: [docs/06-gcp-image-manager-cli.md](file:///home/matheus/Documents/master-usp/migration/docs/06-gcp-image-manager-cli.md).
+
+---
+
+## 📝 2. Atualização Contínua da Documentação
+
+Para manter a base de conhecimento viva e confiável:
+* **Sempre que modificar código**, infraestrutura ou fluxos de execução, você **deve** atualizar a documentação relevante na pasta `docs/` no final da tarefa.
+* Se criar um novo módulo, componente de infraestrutura ou CLI, adicione um novo arquivo `docs/07-*.md` e registre-o no índice [docs/README.md](file:///home/matheus/Documents/master-usp/migration/docs/README.md).
+* Mantenha os comandos validados, logs de exemplo e arquiteturas atualizados de acordo com as alterações reais feitas no código.
+
+---
+
+## 🛠️ 3. Padrões Técnicos e Decisões de Arquitetura
+
+Ao desenvolver, respeite as soluções de engenharia adotadas neste repositório:
+
+### A. Runtimes e Depuração de Checkpoint (CRI-O / CRIU / runc)
+* **Compatibilidade**: Use sempre o runtime `crun` nativo do sistema Debian (com suporte a `+CRIU` no kernel) em vez de executáveis empacotados pelo Nix para evitar conflitos de dynamic linker e glibc mismatch.
+* **AppArmor**: Se encontrar problemas de permissão (`Permission denied`), lembre-se de que os perfis do AppArmor do `crun` e do `runc` devem estar desabilitados (`apparmor_parser -R`).
+* **Links Simbólicos Relativos**: Na migração iterativa (`pre-dump`), os metadados do parent-path devem ser relativos internos (ex: `checkpoint/parent -> ../iter2`). O tarball restaurado pelo CRI-O deve ser autocontido devido ao isolamento de namespaces.
+
+### B. Orquestrador Python (gRPC / Daemon)
+* **Assincronismo**: Todo o controle remoto sobre as VMs é feito de forma não-bloqueante no Daemon via `asyncio` e `asyncssh`. Não utilize chamadas síncronas bloqueantes para controle das VMs.
+* **Segurança do Rsync**: A transferência direta de dados entre as VMs deve usar chaves SSH temporárias efêmeras (geradas, usadas no rsync e destruídas no bloco `finally` da origem) para garantir segurança de credenciais.
+
+### C. GCP Custom Image Manager CLI (Node.js/TypeScript)
+* Utilize a biblioteca `@clack/prompts` e `picocolors` para manter a TUI bonita e amigável.
+* Sempre forneça a flag `--dry-run` para simulações e previna deleções acidentais sem confirmação expressa do usuário.
+
+---
+
+*Nota: A consistência e a rastreabilidade do conhecimento neste projeto são prioridades máximas.*

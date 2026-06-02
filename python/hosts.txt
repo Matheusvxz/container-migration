@@ -1,0 +1,5 @@
+# Lista de IPs dos hosts da migração (um por linha)
+# Substitua pelos IPs internos (ou externos) das suas VMs (host-1 e host-2) no GCP
+
+# 10.128.0.2
+# 10.128.0.3

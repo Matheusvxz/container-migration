@@ -156,6 +156,34 @@ systemctl daemon-reload
 systemctl enable crio
 
 # ---------------------------------------------------------
+echo ">>> 5.5.5. Criando o usuário dev e configurando permissões do Sudo/Socket..."
+# ---------------------------------------------------------
+
+# 1. Cria o usuário 'dev' se não existir
+if ! id "dev" &>/dev/null; then
+    useradd -m -s /bin/bash dev
+    echo "Usuário dev criado com sucesso."
+fi
+
+# 2. Garante que o grupo 'crio' exista e adiciona o 'dev' aos grupos 'sudo' e 'crio'
+groupadd -f crio
+usermod -aG sudo,crio dev
+
+# 3. Configura o Sudo sem senha para o usuário dev
+echo "dev ALL=(ALL) NOPASSWD:ALL" | tee /etc/sudoers.d/90-dev-user
+chmod 440 /etc/sudoers.d/90-dev-user
+echo "Permissões de Sudo sem senha para dev configuradas."
+
+# 4. Configura o CRI-O para criar o socket UDS sob o grupo 'crio'
+mkdir -p /etc/crio/crio.conf.d
+cat <<EOF > /etc/crio/crio.conf.d/15-crio-socket.conf
+[crio]
+# Altera o grupo padrão do socket para que usuários no grupo 'crio' consigam acessá-lo sem sudo para chamadas puras
+stream_share_group = "crio"
+EOF
+echo "Configuração do socket do CRI-O finalizada."
+
+# ---------------------------------------------------------
 echo ">>> 5.6. Executando testes de sanidade e compatibilidade..."
 # ---------------------------------------------------------
 

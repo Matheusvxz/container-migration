@@ -2,6 +2,11 @@ project_id     = "<project-name>"
 default_region = "<default_region>"
 default_zone   = "<default_zone>"
 
+# Configuração das imagens customizadas geradas pelo Packer
+image_name            = "custom-debian-crio-criu-xxxxxxxxx"
+controller_image_name = "custom-debian-controller-xxxxxxxxx"
+image_project         = "<image-project>"
+
 ssh_user         = "vscode"
 ssh_key_filepath = "../../secrets/key.pub"
 
@@ -13,12 +18,14 @@ virtual_machines = {
     machine_type  = "e2-medium"
     zone          = "us-central1-a"
     subnet_region = "us-central1"
+    is_controller = true
   }
   host-2 = {
     name          = "host-2"
     machine_type  = "e2-standard-2"
     zone          = "us-central1-b"
     subnet_region = "us-central1"
+    is_controller = false
   }
   # Adicione mais VMs aqui seguindo o mesmo padrão
   # host-3 = {
@@ -26,5 +33,6 @@ virtual_machines = {
   #   machine_type  = "e2-small"
   #   zone          = "us-central1-c"
   #   subnet_region = "us-central1"
+  #   is_controller = false
   # }
 }
